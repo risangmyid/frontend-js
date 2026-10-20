@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktur Folder</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 32px;
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .tree-card {
+            width: min(100%, 540px);
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 20px 50px rgb(15 23 42 / 10%);
+        }
+
+        h1 {
+            margin: 0 0 20px;
+            font-size: 1.15rem;
+        }
+
+        .tree,
+        .tree ul {
+            margin: 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .tree ul {
+            margin-left: 11px;
+            padding-left: 24px;
+            border-left: 1px solid #cbd5e1;
+        }
+
+        .tree li {
+            position: relative;
+            padding: 7px 0;
+        }
+
+        .tree ul>li::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: -24px;
+            width: 24px;
+            border-top: 1px solid #cbd5e1;
+        }
+
+        .tree ul>li:last-child::after {
+            content: "";
+            position: absolute;
+            top: 21px;
+            bottom: 0;
+            left: -25px;
+            width: 2px;
+            background: #ffffff;
+        }
+
+        .item {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 9px;
+            border-radius: 7px;
+            line-height: 1;
+        }
+
+        .folder>.item::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            margin-right: 2px;
+            border-right: 2px solid #64748b;
+            border-bottom: 2px solid #64748b;
+            transform: rotate(45deg) translateY(-2px);
+            transition: transform 160ms ease;
+        }
+
+        .folder.collapsed>.item::before {
+            transform: rotate(-45deg) translateY(-2px);
+        }
+
+        .folder.collapsed>ul {
+            display: none;
+        }
+
+        .folder>.item:hover::before {
+            border-color: #0f172a;
+        }
+
+        .item:hover {
+            background: #f1f5f9;
+        }
+
+        .folder>.item {
+            cursor: pointer;
+        }
+
+        .folder>.item:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .icon {
+            width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .folder .icon {
+            color: #fbbf24;
+        }
+
+        .file .icon {
+            color: #93c5fd;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="tree-card">
+        <h1>Struktur Folder</h1>
+
+        <ul class="tree">
+            <li class="folder">
+                <span class="item"><span class="icon">📁</span>project</span>
+                <ul>
+                    <li class="folder">
+                        <span class="item"><span class="icon">📁</span>assets</span>
+                        <ul>
+                            <li class="folder"><span class="item"><span class="icon">📁</span>images</span></li>
+                            <li class="folder"><span class="item"><span class="icon">📁</span>styles</span></li>
+                        </ul>
+                    </li>
+                    <li class="folder">
+                        <span class="item"><span class="icon">📁</span>src</span>
+                        <ul>
+                            <li class="file"><span class="item"><span class="icon">📄</span>app.js</span></li>
+                            <li class="file"><span class="item"><span class="icon">📄</span>index.html</span></li>
+                        </ul>
+                    </li>
+                    <li class="file"><span class="item"><span class="icon">📄</span>README.md</span></li>
+                </ul>
+            </li>
+            <li class="folder">
+                <span class="item"><span class="icon">📁</span>project</span>
+                <ul>
+                    <li class="folder">
+                        <span class="item"><span class="icon">📁</span>assets</span>
+                        <ul>
+                            <li class="folder"><span class="item"><span class="icon">📁</span>images</span></li>
+                            <li class="folder"><span class="item"><span class="icon">📁</span>styles</span></li>
+                        </ul>
+                    </li>
+                    <li class="folder">
+                        <span class="item"><span class="icon">📁</span>src</span>
+                        <ul>
+                            <li class="file"><span class="item"><span class="icon">📄</span>app.js</span></li>
+                            <li class="file"><span class="item"><span class="icon">📄</span>index.html</span></li>
+                        </ul>
+                    </li>
+                    <li class="file"><span class="item"><span class="icon">📄</span>README.md</span></li>
+                </ul>
+            </li>
+        </ul>
+    </main>
+
+    <script>
+        document.querySelectorAll('.folder > .item').forEach((item) => {
+            const folder = item.parentElement;
+            const children = folder.querySelector(':scope > ul');
+
+            if (!children) return;
+
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', '0');
+            item.setAttribute('aria-expanded', 'true');
+
+            const toggleFolder = () => {
+                const isCollapsed = folder.classList.toggle('collapsed');
+                item.setAttribute('aria-expanded', String(!isCollapsed));
+            };
+
+            item.addEventListener('click', toggleFolder);
+            item.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleFolder();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
